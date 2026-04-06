@@ -1,0 +1,50 @@
+@charset "UTF-8";
+
+/* Shared chat UI bits used by both user + admin support pages. */
+
+.chat-glass {
+  background: linear-gradient(135deg, rgba(255,255,255,.90), rgba(255,255,255,.72));
+  border: 1px solid rgba(0,0,0,.06);
+  backdrop-filter: blur(10px);
+}
+
+.chat-soft-glow {
+  box-shadow: 0 12px 30px rgba(106, 13, 173, 0.10), 0 10px 24px rgba(80, 200, 120, 0.08);
+}
+
+.chat-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+.chat-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(106, 13, 173, 0.20);
+  border-radius: 999px;
+  border: 2px solid rgba(255,255,255,.7);
+}
+.chat-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0,0,0,.03);
+  border-radius: 999px;
+}
+
+.chat-bubble {
+  max-width: 78%;
+  word-break: break-word;
+}
+
+.chat-bubble-user {
+  background: linear-gradient(135deg, rgba(80,200,120,.18), rgba(106,13,173,.14));
+  border: 1px solid rgba(80,200,120,.20);
+}
+
+.chat-bubble-admin {
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+.chat-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 0 4px rgba(80,200,120,.15);
+}
+

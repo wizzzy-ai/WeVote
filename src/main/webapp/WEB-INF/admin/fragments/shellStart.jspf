@@ -1,0 +1,138 @@
+<%
+  String shellTitle = (String) request.getAttribute("adminPageTitle");
+  if (shellTitle == null) shellTitle = "Admin";
+  String shellSubtitle = (String) request.getAttribute("adminPageSubtitle");
+  if (shellSubtitle == null) shellSubtitle = "Control panel";
+  String activeAdminPage = (String) request.getAttribute("activeAdminPage");
+  if (activeAdminPage == null) activeAdminPage = "";
+  String adminFirstName = session != null && session.getAttribute("firstName") != null ? String.valueOf(session.getAttribute("firstName")) : "Admin";
+  String adminLastName = session != null && session.getAttribute("lastName") != null ? String.valueOf(session.getAttribute("lastName")) : "";
+  String adminName = (adminFirstName + " " + adminLastName).trim();
+  String adminInitials = adminFirstName.substring(0, 1).toUpperCase() + (adminLastName.isEmpty() ? "" : adminLastName.substring(0, 1).toUpperCase());
+%>
+
+<div class="admin-sidebar-overlay" id="admin-sidebar-overlay"></div>
+
+<div class="admin-shell">
+  <aside id="admin-sidebar" class="admin-sidebar" aria-label="Admin navigation">
+    <div class="flex items-center justify-between gap-3">
+      <a class="admin-brand block p-2" href="${pageContext.request.contextPath}/">
+        <img src="${pageContext.request.contextPath}/images/logos/logoShort.png"
+             alt="WeVote logo" class="h-10 w-auto object-contain">
+      </a>
+    </div>
+
+    <nav class="admin-nav">
+      <a href="${pageContext.request.contextPath}/admin/dashboard"
+         class="admin-nav-link <%= "dashboard".equals(activeAdminPage) ? "is-active" : "" %>">Dashboard</a>
+      <a href="${pageContext.request.contextPath}/admin/contesters"
+         class="admin-nav-link <%= "contesters".equals(activeAdminPage) ? "is-active" : "" %>">Contesters</a>
+      <a href="${pageContext.request.contextPath}/admin/users"
+         class="admin-nav-link <%= "users".equals(activeAdminPage) ? "is-active" : "" %>">Users</a>
+      <a href="${pageContext.request.contextPath}/admin/messages"
+         class="admin-nav-link <%= "messages".equals(activeAdminPage) ? "is-active" : "" %>">Messages</a>
+      <a href="${pageContext.request.contextPath}/admin/election"
+         class="admin-nav-link <%= "election".equals(activeAdminPage) ? "is-active" : "" %>">Election Settings</a>
+      <a href="${pageContext.request.contextPath}/admin/results"
+         class="admin-nav-link <%= "results".equals(activeAdminPage) ? "is-active" : "" %>">Results</a>
+      <a href="${pageContext.request.contextPath}/admin/audit"
+         class="admin-nav-link <%= "activity".equals(activeAdminPage) ? "is-active" : "" %>">Activity Log</a>
+      <% if ("SUPER_ADMIN".equals(session.getAttribute("userRole"))) { %>
+        <a href="${pageContext.request.contextPath}/admin/create-admin"
+           class="admin-nav-link <%= "createAdmin".equals(activeAdminPage) ? "is-active" : "" %>">Create Admin</a>
+      <% } %>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div class="flex items-start gap-3 w-full">
+        <button type="button"
+                id="hamburger-btn"
+                class="admin-mobile-toggle admin-mobile-only shrink-0"
+                aria-label="Open navigation"
+                aria-controls="admin-sidebar"
+                aria-expanded="false">
+          <svg id="hamburger-open-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16"/>
+          </svg>
+          <svg id="hamburger-close-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+        <div class="min-w-0">
+          <h1 class="admin-page-title"><%= shellTitle %></h1>
+          <p class="admin-page-subtitle"><%= shellSubtitle %></p>
+        </div>
+      </div>
+      <div class="admin-profile">
+        <div class="min-w-0">
+          <div class="text-sm font-bold text-slate-900 truncate"><%= adminName %></div>
+          <div class="text-xs text-slate-500 truncate">Administrator</div>
+        </div>
+        <span class="admin-avatar"><%= adminInitials %></span>
+        <a href="<%=request.getContextPath()%>/logout" class="admin-link-muted">Logout</a>
+      </div>
+    </div>
+
+<script>
+  (function () {
+    const hamburgerBtn = document.getElementById("hamburger-btn");
+    const sidebar = document.getElementById("admin-sidebar");
+    const overlay = document.getElementById("admin-sidebar-overlay");
+    const openIcon = document.getElementById("hamburger-open-icon");
+    const closeIcon = document.getElementById("hamburger-close-icon");
+    const mobileBreakpoint = window.matchMedia("(max-width: 980px)");
+
+    if (!sidebar || !hamburgerBtn || !overlay || !openIcon || !closeIcon) return;
+
+    function setSidebarState(open) {
+      if (!mobileBreakpoint.matches) {
+        sidebar.classList.remove("is-open");
+        overlay.classList.remove("is-open");
+        hamburgerBtn.setAttribute("aria-expanded", "false");
+        hamburgerBtn.setAttribute("aria-label", "Open navigation");
+        openIcon.classList.remove("hidden");
+        closeIcon.classList.add("hidden");
+        document.body.style.overflow = "";
+        document.body.classList.remove("admin-nav-open");
+        return;
+      }
+
+      sidebar.classList.toggle("is-open", open);
+      overlay.classList.toggle("is-open", open);
+      hamburgerBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      hamburgerBtn.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+      openIcon.classList.toggle("hidden", open);
+      closeIcon.classList.toggle("hidden", !open);
+      document.body.style.overflow = open ? "hidden" : "";
+      document.body.classList.toggle("admin-nav-open", open);
+    }
+
+    hamburgerBtn.addEventListener("click", function () {
+      setSidebarState(!sidebar.classList.contains("is-open"));
+    });
+
+    overlay.addEventListener("click", function () {
+      setSidebarState(false);
+    });
+
+    sidebar.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        setSidebarState(false);
+      });
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        setSidebarState(false);
+      }
+    });
+
+    window.addEventListener("resize", function () {
+      setSidebarState(sidebar.classList.contains("is-open"));
+    });
+
+    setSidebarState(false);
+  })();
+</script>
