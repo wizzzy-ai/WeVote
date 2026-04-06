@@ -8,6 +8,7 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
+.m2/
 
 # Compiled Java classes
 *.class
@@ -33,4 +34,3 @@ bin/
 .metadata/
 .smarttomcat/
 node_modules/
-

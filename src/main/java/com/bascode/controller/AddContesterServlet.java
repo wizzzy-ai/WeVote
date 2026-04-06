@@ -7,7 +7,6 @@ import com.bascode.model.enums.Position;
 import com.bascode.model.enums.Role;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -22,13 +21,19 @@ public class AddContesterServlet extends HttpServlet {
     private static final String ALLOWED_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
     private static final int TEMP_PASSWORD_LENGTH = 12;
 
-    private EntityManagerFactory emf;
-    private final SecureRandom secureRandom = new SecureRandom();
+	private EntityManagerFactory emf;
+	private final SecureRandom secureRandom = new SecureRandom();
 
-    @Override
-    public void init() throws ServletException {
-        emf = Persistence.createEntityManagerFactory("VotingPU");
-    }
+	@Override
+	public void init() throws ServletException {
+		Object emfObj = getServletContext().getAttribute("emf");
+		if (emfObj instanceof EntityManagerFactory factory) {
+			emf = factory;
+			return;
+		}
+
+		throw new ServletException("EntityManagerFactory is not initialized. Check DB configuration and startup logs.");
+	}
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -142,12 +147,10 @@ public class AddContesterServlet extends HttpServlet {
             builder.append(ALLOWED_CHARS.charAt(idx));
         }
         return builder.toString();
-    }
+	}
 
-    @Override
-    public void destroy() {
-        if (emf != null) {
-            emf.close();
-        }
-    }
+	@Override
+	public void destroy() {
+		// managed by the app-level JPAInitializer
+	}
 }

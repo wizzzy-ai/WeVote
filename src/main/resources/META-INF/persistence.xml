@@ -2,28 +2,22 @@
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence"
              version="3.0">
 
-    <persistence-unit name="VotingPU" transaction-type="RESOURCE_LOCAL">
+	    <persistence-unit name="VotingPU" transaction-type="RESOURCE_LOCAL">
 
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+	        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <properties>
-            <!-- Dynamic DB config from env vars for Render/PostgreSQL, fallback H2 local -->
-            <property name="jakarta.persistence.jdbc.driver" 
-                      value="${env.DB_DRIVER:org.h2.Driver}"/>
-            <property name="jakarta.persistence.jdbc.url" 
-                      value="${env.DATABASE_URL:jdbc:h2:mem:votingdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}"/>
-            <property name="jakarta.persistence.jdbc.user" 
-                      value="${env.DB_USER:sa}"/>
-            <property name="jakarta.persistence.jdbc.password" 
-                      value="${env.DB_PASSWORD:}"/>
+	        <properties>
+	            <!-- Defaults: local H2 (production overrides are applied in com.bascode.util.JPAInitializer) -->
+	            <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
+	            <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:votingdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"/>
+	            <property name="jakarta.persistence.jdbc.user" value="sa"/>
+	            <property name="jakarta.persistence.jdbc.password" value=""/>
 
-            <property name="hibernate.dialect" 
-                      value="${env.HIBERNATE_DIALECT:org.hibernate.dialect.H2Dialect}"/>
-            <property name="hibernate.hbm2ddl.auto" 
-                      value="${env.HIBERNATE_HBM2DDL_AUTO:update}"/>
-            <property name="hibernate.show_sql" value="false"/>
-            <property name="hibernate.format_sql" value="true"/>
-        </properties>
+	            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+	            <property name="hibernate.hbm2ddl.auto" value="update"/>
+	            <property name="hibernate.show_sql" value="false"/>
+	            <property name="hibernate.format_sql" value="true"/>
+	        </properties>
 
-    </persistence-unit>
-</persistence>
+	    </persistence-unit>
+	</persistence>
