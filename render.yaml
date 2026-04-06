@@ -1,0 +1,25 @@
+services:
+  # Web Service
+  - type: web
+    name: voting-system
+    env: java
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java $JAVA_OPTS -jar target/online-voting-system-0.0.1-SNAPSHOT.war
+    envVars:
+      - key: DB_DRIVER
+        fromDatabase:
+          name: voting-db
+          property: connectionString
+      - key: HIBERNATE_DIALECT
+        value: org.hibernate.dialect.PostgreSQLDialect
+      - key: HIBERNATE_HBM2DDL_AUTO
+        value: update
+
+  # PostgreSQL Database
+  - type: pgsql
+    name: voting-db
+    disk:
+      name: voting-data
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 1
+

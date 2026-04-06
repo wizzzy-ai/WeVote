@@ -7,15 +7,21 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <properties>
-            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:mysql://localhost:3306/voting_system_db?useSSL=false&amp;allowPublicKeyRetrieval=true"/>
-            <property name="jakarta.persistence.jdbc.user" value="root"/>
-            <property name="jakarta.persistence.jdbc.password" value="Sam10520."/>
+            <!-- Dynamic DB config from env vars for Render/PostgreSQL, fallback H2 local -->
+            <property name="jakarta.persistence.jdbc.driver" 
+                      value="${env.DB_DRIVER:org.h2.Driver}"/>
+            <property name="jakarta.persistence.jdbc.url" 
+                      value="${env.DATABASE_URL:jdbc:h2:mem:votingdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}"/>
+            <property name="jakarta.persistence.jdbc.user" 
+                      value="${env.DB_USER:sa}"/>
+            <property name="jakarta.persistence.jdbc.password" 
+                      value="${env.DB_PASSWORD:}"/>
 
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.dialect" 
+                      value="${env.HIBERNATE_DIALECT:org.hibernate.dialect.H2Dialect}"/>
+            <property name="hibernate.hbm2ddl.auto" 
+                      value="${env.HIBERNATE_HBM2DDL_AUTO:update}"/>
+            <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="true"/>
         </properties>
 
